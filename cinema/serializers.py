@@ -47,6 +47,21 @@ class MovieListSerializer(MovieDetailSerializer):
         fields = "__all__"
 
 
+class MovieCreateSerializer(serializers.ModelSerializer):
+    actors = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Actor.objects.all()
+    )
+    genres = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Genre.objects.all()
+    )
+
+    class Meta:
+        model = Movie
+        fields = "__all__"
+
+
 class MovieSessionListSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
     cinema_hall_name = serializers.CharField(
@@ -70,6 +85,15 @@ class MovieSessionListSerializer(serializers.ModelSerializer):
 class MovieSessionDetailSerializer(serializers.ModelSerializer):
     movie = MovieListSerializer(read_only=True)
     cinema_hall = CinemaHallSerializer(read_only=True)
+
+    class Meta:
+        model = MovieSession
+        fields = "__all__"
+
+
+class MovieSessionCreateSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    cinema_hall = serializers.PrimaryKeyRelatedField(queryset=CinemaHall.objects.all())
 
     class Meta:
         model = MovieSession
